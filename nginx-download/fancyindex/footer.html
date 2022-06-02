@@ -1,0 +1,49 @@
+    </div>
+  </div>
+
+  <footer>
+    <div>
+      <p>
+        <a href="https://en.opensuse.org/openSUSE:Privacy_policy">Privacy policy</a>
+        <a href="https://en.opensuse.org/Terms_of_site">Disclaimers</a>
+      </p>
+      <p>&copy; openSUSE 2022</p>
+    </div>
+    <!--
+    <div class="sponsor">
+      <p>
+        This mirror is hosted by
+      </p>
+      <p>
+        <a href="https://download.opensuse.org/">
+          <img src="/theme/sponsor.svg" height="60">
+        </a>
+      </p>
+    </div>
+    -->
+  </footer>
+
+  <script>
+    var loc = window.location.pathname;
+    var segments = loc.split("/");
+    var breadcrumb = "";
+    var segment = "";
+    var currentPath = "/";
+
+    for (var i = 0; i < segments.length; i++) {
+      if (segments[i] !== "") {
+        currentPath += segments[i] + "/";
+        segment = window.unescape(segments[i]);
+
+        breadcrumb += `<li class="select-none">&rsaquo;</li>`;
+        breadcrumb += `<li class="crumb"><a href="${currentPath}">${segment}</a></li>`;
+      } else if (segments.length -1 !== i) {
+        currentPath += "";
+        breadcrumb += `<li class="crumb"><a href="${currentPath}">Home</a></li>`;
+      }
+    }
+
+    document.getElementById("breadcrumb").innerHTML = breadcrumb;
+  </script>
+</body>
+</html>

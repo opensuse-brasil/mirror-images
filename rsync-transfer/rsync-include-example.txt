@@ -1,0 +1,9 @@
+#
+# This will sync a single file only,
+# good for testing your deployment.
+#
+
++ tumbleweed/
++ tumbleweed/iso
++ tumbleweed/iso/README.FIRST
+- *
