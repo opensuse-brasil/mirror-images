@@ -58,6 +58,13 @@ The rsync module `opensuse-full-with-factory` is over 3 TB.
 
 Default: `opensuse-full-with-factory`
 
+### RSYNC_PATH
+
+The path inside the module.
+This affects the include file.
+
+Default: `/opensuse/`
+
 ### RSYNC_USER
 
 The mirror user to authenticate.
