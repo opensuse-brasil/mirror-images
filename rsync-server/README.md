@@ -43,7 +43,7 @@ Check the [Linux man page](https://linux.die.net/man/5/rsyncd.conf) for more inf
 
 ## Volumes
 
-### /opensuse
+### /srv/pub/opensuse
 
 The path used for opensuse module in rsync.
 
