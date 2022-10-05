@@ -9,6 +9,10 @@ COPY fancyindex /srv/www/fancyindex
 
 RUN mkdir -p /srv/pub/opensuse
 
+# HACK: Hardcoded symlinks from openSUSE servers
+RUN mkdir -p /srv/ftp/pub/
+RUN ln -s /srv/pub/opensuse /srv/ftp/pub/opensuse
+
 VOLUME ["/srv/pub/opensuse/", "/srv/www/fancyindex"]
 
 EXPOSE 80 443
