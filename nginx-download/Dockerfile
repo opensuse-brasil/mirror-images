@@ -1,6 +1,6 @@
 FROM registry.opensuse.org/opensuse/leap:latest
 
-RUN zypper addrepo https://download.opensuse.org/repositories/server:http/openSUSE_Leap_$(source /etc/os-release; echo $VERSION)/server:http.repo
+RUN zypper addrepo https://download.opensuse.org/repositories/server:http/$(source /etc/os-release; echo $VERSION)/server:http.repo
 RUN zypper -n --no-gpg-checks refresh
 RUN zypper in -y nginx nginx-module-fancyindex nginx-module-geoip2 nginx-module-headers-more
 
