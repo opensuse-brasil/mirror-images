@@ -31,12 +31,9 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - dockerfile: ./nginx-download/Dockerfile
-            image: nginx-download
-          - dockerfile: ./rsync-server/Dockerfile
-            image: rsync-server
-          - dockerfile: ./rsync-transfer/Dockerfile
-            image: rsync-transfer
+          - image: nginx-download
+          - image: rsync-server
+          - image: rsync-transfer
     
     permissions:
       contents: read
@@ -87,8 +84,7 @@ jobs:
         id: build-and-push
         uses: docker/build-push-action@0565240e2d4ab88bba5387d719585280857ece09 # v5.0.0
         with:
-          context: .
-          file: ${{ matrix.dockerfile }}
+          context: ${{ matrix.image }}
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
