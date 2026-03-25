@@ -1,0 +1,63 @@
+name: Build Images CI
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+  schedule:
+    - cron: "0 3 * * 0"
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: nginx-download
+            dockerfile: nginx-download/Dockerfile
+          - name: rsync-transfer
+            dockerfile: rsync-transfer/Dockerfile
+          - name: rsync-server
+            dockerfile: rsync-server/Dockerfile
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      # required for arm64 builds
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set date tag
+        run: echo "DATE=$(date +'%Y-%m-%d')" >> $GITHUB_ENV
+
+      - name: Login to GHCR
+        run: |
+          podman login \
+            -u=${{ github.actor }} \
+            -p=${{ secrets.GITHUB_TOKEN }} \
+            ghcr.io
+
+      - name: Build and push multi-arch image
+        run: |
+          IMAGE=ghcr.io/opensuse-brasil/${{ matrix.name }}
+          CONTEXT=$(dirname ${{ matrix.dockerfile }})
+
+          podman manifest create $IMAGE:${{ env.DATE }}
+
+          podman build \
+            --platform linux/amd64,linux/arm64 \
+            --manifest $IMAGE:${{ env.DATE }} \
+            -f ${{ matrix.dockerfile }} \
+            $CONTEXT
+
+          podman tag $IMAGE:${{ env.DATE }} $IMAGE:latest
+
+          podman manifest push --all $IMAGE:${{ env.DATE }}
+          podman manifest push --all $IMAGE:latest
