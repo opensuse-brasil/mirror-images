@@ -1,33 +1,26 @@
 # rsync-transfer
 
-rsync client that transfers the desired content from openSUSE servers into yours.
+A simple rsync client that transfers the desired content from openSUSE servers into yours.
 
 This service should run as a cron job in Swarm or Kubernetes, it is not a daemon.
 
-## Build
+## Usage
+
+To run the transfer, use the following command:
 
 ```bash
-podman build -t mirror-rsync-transfer . --no-cache
+podman run -it --rm -v /host/path/to/opensuse:/srv/pub/opensuse:Z -v ./rsync-include-example.txt:/etc/rsync-include.txt:Z ghcr.io/opensuse-brasil/rsync-transfer:latest
 ```
 
-## Push
+**Note:** Update the volumes accordingly.
+
+To test the transfer without downloading anything, use the following command:
 
 ```bash
-podman push mirror-rsync-transfer opensusebr/mirror-rsync-transfer:latest
-podman push mirror-rsync-transfer opensusebr/mirror-rsync-transfer:$(date +"%Y%m%d")
+podman run -it --rm -e RSYNC_DRYRUN=1 -v /host/path/to/opensuse:/srv/pub/opensuse:Z -v ./rsync-include-example.txt:/etc/rsync-include.txt:Z ghcr.io/opensuse-brasil/rsync-transfer:latest
 ```
 
-## Pull
-
-```bash
-podman pull opensusebr/mirror-rsync-transfer
-```
-
-## Run
-
-```bash
-podman run -it --rm --read-only -v ./opensuse:/srv/pub/opensuse -v ./rsync-include.txt:/etc/rsync-include.txt opensusebr/mirror-rsync-transfer
-```
+DRY RUN gives you an estimate of disk size usage.
 
 ## File Configuration
 
@@ -52,9 +45,9 @@ Default: `rsync.opensuse.org`
 ### RSYNC_MODULE
 
 The mirror module to use.
-Check available modules [here](https://mirrors.opensuse.org/list/rsyncinfo-stage.o.o.txt).
+Check available modules [here](https://en.opensuse.org/openSUSE:Mirror_infrastructure#rsync_modules).
 
-The rsync module `opensuse-full-with-factory` is over 3 TB.
+The default rsync module is over 5 TB.
 
 Default: `opensuse-full-with-factory`
 

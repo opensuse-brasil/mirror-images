@@ -9,7 +9,7 @@ A service that will transfer (mirror) the desired content from openSUSE servers 
 ### Image
 
 ```bash
-podman pull opensusebr/mirror-rsync-transfer
+podman pull ghcr.io/opensuse-brasil/rsync-transfer:latest
 ```
 
 ## rsync-server
@@ -21,17 +21,17 @@ Similar to [rsync.opensuse.org](http://rsync.opensuse.org/).
 ### Image
 
 ```bash
-podman pull opensusebr/mirror-rsync-server
+podman pull ghcr.io/opensuse-brasil/rsync-server:latest
 ```
 
 ## nginx-download
 
-A download service that will serve the contents of for your mirror for Zypper and web browsing.
+A download service that will serve the contents of your mirror for Zypper and web browsing.
 
 Similar to [download.opensuse.org](http://download.opensuse.org/).
 
 ### Image
 
 ```bash
-podman pull opensusebr/mirror-nginx-download
+podman pull ghcr.io/opensuse-brasil/nginx-download:latest
 ```

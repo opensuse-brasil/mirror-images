@@ -1,17 +1,49 @@
-FROM registry.opensuse.org/opensuse/leap:latest
+FROM registry.suse.com/bci/bci-micro:16.0 AS target
+FROM registry.suse.com/bci/bci-base:16.0 AS builder
 
-RUN zypper addrepo https://download.opensuse.org/repositories/server:http/$(source /etc/os-release; echo $VERSION)/server:http.repo
-RUN zypper -n --no-gpg-checks refresh
-RUN zypper in -y nginx nginx-module-fancyindex nginx-module-geoip2 nginx-module-headers-more
+ARG FANCYINDEX_VER=v0.6.0
+ARG GEOIP2_VER=3.4
+ARG HEADERS_MORE_VER=v0.39
 
-COPY nginx.conf /etc/nginx/nginx.conf
-COPY fancyindex /srv/www/fancyindex
+WORKDIR /build
 
-RUN mkdir -p /srv/pub/opensuse
+# these modules are not in BCI
+RUN curl -L https://github.com/aperezdc/ngx-fancyindex/archive/refs/tags/${FANCYINDEX_VER}.tar.gz \
+        | tar -xz -C /build && mv /build/ngx-fancyindex-* /build/fancyindex
+
+RUN curl -L https://github.com/leev/ngx_http_geoip2_module/archive/refs/tags/${GEOIP2_VER}.tar.gz \
+        | tar -xz -C /build && mv /build/ngx_http_geoip2_module-* /build/geoip2
+
+RUN curl -L https://github.com/openresty/headers-more-nginx-module/archive/refs/tags/${HEADERS_MORE_VER}.tar.gz \
+        | tar -xz -C /build && mv /build/headers-more-nginx-module-* /build/headers-more
+
+RUN zypper install -y make nginx-source nginx-macros libmaxminddb-devel
+
+RUN cd /usr/src/nginx/ && \
+    ./configure --with-compat --with-stream \
+      --add-dynamic-module=/build/fancyindex \
+      --add-dynamic-module=/build/geoip2 \
+      --add-dynamic-module=/build/headers-more && \
+    make modules
+
+COPY --from=target / /target
+
+RUN zypper -n --installroot /target --gpg-auto-import-keys install --no-recommends nginx
+
+RUN cp /usr/src/nginx/objs/*.so /target/usr/lib64/nginx/modules/
+
+COPY nginx.conf /target/etc/nginx/nginx.conf
+COPY fancyindex /target/srv/www/fancyindex
+
+RUN mkdir -p /target/srv/pub/opensuse
 
 # HACK: Hardcoded symlinks from openSUSE servers
-RUN mkdir -p /srv/ftp/pub/
-RUN ln -s /srv/pub/opensuse /srv/ftp/pub/opensuse
+RUN mkdir -p /target/srv/ftp/pub/
+RUN ln -s /target/srv/pub/opensuse /target/srv/ftp/pub/opensuse
+
+FROM scratch
+
+COPY --from=builder /target /
 
 VOLUME ["/srv/pub/opensuse/", "/srv/www/fancyindex"]
 

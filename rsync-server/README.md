@@ -8,30 +8,15 @@ The scanning happens from `195.135.220.0/22`.
 
 > Recomendation: Restrict access to the IP above in your network security groups, server firewall or iptables.
 
-## Build
+## Usage
+
+To run the server, use the following command:
 
 ```bash
-podman build -t mirror-rsync-server . --no-cache
+podman run -it --rm -v /host/path/to/opensuse:/srv/pub/opensuse:Z -p 873:873 ghcr.io/opensuse-brasil/rsync-server:latest
 ```
 
-## Push
-
-```bash
-podman push mirror-rsync-server opensusebr/mirror-rsync-server:latest
-podman push mirror-rsync-server opensusebr/mirror-rsync-server:$(date +"%Y%m%d")
-```
-
-## Pull
-
-```bash
-podman pull opensusebr/mirror-rsync-server
-```
-
-## Run
-
-```bash
-podman run -it --rm --read-only -v ./opensuse:/srv/pub/opensuse -p 873:873 opensusebr/mirror-rsync-server
-```
+**Note:** Update the volume accordingly.
 
 ## File Configuration
 

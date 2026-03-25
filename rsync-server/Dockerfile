@@ -1,13 +1,17 @@
-FROM registry.opensuse.org/opensuse/leap:latest
+FROM registry.suse.com/bci/bci-micro:16.0 AS target
+FROM registry.suse.com/bci/bci-base:16.0 AS builder
 
-RUN zypper in -y rsync
+COPY --from=target / /target
 
-COPY rsyncd.conf /etc/rsyncd.conf
+RUN zypper -n --installroot /target --gpg-auto-import-keys install --no-recommends rsync system-user-nobody
 
-RUN groupadd nobody
-RUN useradd -m -g nobody -c "nobody user" -s /bin/bash nobody
+RUN mkdir -p /target/srv/pub/opensuse
 
-RUN mkdir -p /srv/pub/opensuse
+COPY rsyncd.conf /target/etc/rsyncd.conf
+
+FROM scratch
+
+COPY --from=builder /target /
 
 VOLUME ["/srv/pub/opensuse", "/var/log"]
 

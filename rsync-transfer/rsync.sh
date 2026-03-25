@@ -1,3 +1,5 @@
+#!/bin/bash
+
 RSYNC_HOST=${RSYNC_HOST:-rsync.opensuse.org}
 RSYNC_MODULE=${RSYNC_MODULE:-opensuse-full-with-factory}
 RSYNC_PATH=${RSYNC_PATH:-/}
@@ -5,7 +7,7 @@ RSYNC_USER=${RSYNC_USER:-opensuse}
 RSYNC_PASSWORD=${RSYNC_PASSWORD}
 RSYNC_CHOWN=${RSYNC_CHOWN}
 RSYNC_INCLUDE_FILE=${RSYNC_INCLUDE_FILE}
-RSYNC_LOG_FILE=${RSYNC_LOG_FILE}
+RSYNC_LOG_FILE=${RSYNC_LOG_FILE:-/var/log/rsync.log}
 RSYNC_DESTINATION=${RSYNC_DESTINATION:-/srv/pub/opensuse}
 
 ME=$(basename $0)
@@ -19,11 +21,11 @@ function usage {
     echo ""
     echo "Optional arguments:"
     echo ""
-    echo " -s, --host          rsync host (default: ${RSYNC_HOST})"
-    echo " -m, --module        rsync module (default: ${RSYNC_MODULE})"
-    echo " -p, --path          rsync path in module (default: ${RSYNC_PATH})"
-    echo " -u, --user          rsync user (default: ${RSYNC_USER})"
-    echo " -d, --destination   destination of files transfered (default: ${RSYNC_DESTINATION})"
+    echo " -s, --host          rsync host (default: ${RSYNC_HOST:-<not-set>})"
+    echo " -m, --module        rsync module (default: ${RSYNC_MODULE:-<not-set>})"
+    echo " -p, --path          rsync path in module (default: ${RSYNC_PATH:-<not-set>})"
+    echo " -u, --user          rsync user (default: ${RSYNC_USER:-<not-set>})"
+    echo " -d, --destination   destination of files transfered (default: ${RSYNC_DESTINATION:-<not-set>})"
     echo " -c, --chown         change ownership of files in the transfer (default: ${RSYNC_CHOWN:-<not-set>})"
     echo " --dry-run           perform a trial run with no changes made"
     echo " -i, --include-file  only transfer files that match the pattern (default: ${RSYNC_INCLUDE_FILE:-<not-set>})"

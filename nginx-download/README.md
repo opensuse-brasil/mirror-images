@@ -2,29 +2,12 @@
 
 NGINX file server with fancy index and other rules to deliver mirrored openSUSE repositories.
 
-## Build
+## Usage
+
+To run the web server, use the following command:
 
 ```bash
-podman build -t mirror-nginx-download . --no-cache
-```
-
-## Push
-
-```bash
-podman push mirror-nginx-download opensusebr/mirror-nginx-download:latest
-podman push mirror-nginx-download opensusebr/mirror-nginx-download:$(date +"%Y%m%d")
-```
-
-## Pull
-
-```bash
-podman pull opensusebr/mirror-nginx-download
-```
-
-## Run
-
-```bash
-podman run -it --rm --read-only -v ./opensuse:/srv/pub/opensuse -p 80:8000 opensusebr/mirror-nginx-download
+podman run -it --rm -v /host/path/to/opensuse:/srv/pub/opensuse:Z -p 80:8000 ghcr.io/opensuse-brasil/nginx-download:latest
 ```
 
 ## Available modules
