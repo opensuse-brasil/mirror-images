@@ -3,7 +3,7 @@ FROM registry.suse.com/bci/bci-base:16.0 AS builder
 
 ARG FANCYINDEX_VER=v0.6.0
 ARG GEOIP2_VER=3.4
-ARG HEADERS_MORE_VER=v0.39
+ARG HEADERS_MORE_VER=v0.40
 
 WORKDIR /build
 
